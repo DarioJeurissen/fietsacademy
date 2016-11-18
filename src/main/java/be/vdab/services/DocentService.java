@@ -10,58 +10,29 @@ import be.vdab.filters.JPAFilter;
 import be.vdab.repositories.DocentRepository;
 
 // enkele imports ...
-public class DocentService {
+public class DocentService extends AbstractService {
 	private final DocentRepository docentRepository = new DocentRepository();
 
 	public Optional<Docent> read(long id) {
-		EntityManager entityManager = JPAFilter.getEntityManager();
-		try {
-			return docentRepository.read(id);
-		} finally {
-			entityManager.close();
-		}
+		return docentRepository.read(id);
 	}
 
 	public void create(Docent docent) {
-		EntityManager entityManager = JPAFilter.getEntityManager();
-		try {
-			entityManager.getTransaction().begin();
-			docentRepository.create(docent, entityManager);
-			entityManager.getTransaction().commit();
-		} catch (RuntimeException ex) {
-			entityManager.getTransaction().rollback();
-			throw ex;
-		} finally {
-			entityManager.close();
-		}
+		beginTransaction();
+		docentRepository.create(docent);
+		commit();
 	}
 
 	public void delete(long id) {
-		EntityManager entityManager = JPAFilter.getEntityManager();
-		try {
-			entityManager.getTransaction().begin();
-			docentRepository.delete(id, entityManager);
-			entityManager.getTransaction().commit();
-		} catch (RuntimeException ex) {
-			entityManager.getTransaction().rollback();
-			throw ex;
-		} finally {
-			entityManager.close();
-		}
+		beginTransaction();
+		docentRepository.delete(id);
+		commit();
 	}
 
 	public void opslag(long id, BigDecimal percentage) {
-		EntityManager entityManager = JPAFilter.getEntityManager();
-		try {
-			entityManager.getTransaction().begin();
-			docentRepository.read(id).ifPresent(docent -> docent.opslag(percentage));
-			entityManager.getTransaction().commit();
-		} catch (RuntimeException ex) {
-			entityManager.getTransaction().rollback();
-			throw ex;
-		} finally {
-			entityManager.close();
-		}
+		beginTransaction();
+		docentRepository.read(id).ifPresent(docent -> docent.opslag(percentage));
+		commit();
 	}
 
 }

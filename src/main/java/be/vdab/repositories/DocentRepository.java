@@ -2,23 +2,18 @@ package be.vdab.repositories;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import be.vdab.entities.Docent;
-import be.vdab.filters.JPAFilter;
 
-// enkele imports ...
-public class DocentRepository {
+public class DocentRepository extends AbstractRepository {
 	public Optional<Docent> read(long id) {
-		EntityManager entityManager = JPAFilter.getEntityManager();
-		return Optional.ofNullable(entityManager.find(Docent.class, id));
+		return Optional.ofNullable(getEntityManager().find(Docent.class, id));
 	}
 
-	public void create(Docent docent, EntityManager entityManager) {
-		entityManager.persist(docent);
+	public void create(Docent docent) {
+		getEntityManager().persist(docent);
 	}
 
-	public void delete(long id, EntityManager entityManager) {
-		read(id).ifPresent(docent -> JPAFilter.getEntityManager().remove(docent));
+	public void delete(long id) {
+		read(id).ifPresent(docent -> getEntityManager().remove(docent));
 	}
 }
